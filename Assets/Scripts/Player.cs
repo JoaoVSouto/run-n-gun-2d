@@ -6,16 +6,20 @@ public class Player : MonoBehaviour
 {
   public float speed;
   public float jumpForce;
+  public GameObject fireBall;
+  public Transform firePoint;
 
   private Rigidbody2D rigidBody;
   private Animator animator;
   private bool isJumping;
+  private bool isFiring;
   private const int GROUND_LAYER = 6;
   private enum AnimationStates
   {
     Idle,
     Run,
     Jump,
+    Fire,
   }
 
   void Start()
@@ -26,8 +30,13 @@ public class Player : MonoBehaviour
 
   void Update()
   {
-    Move();
     Jump();
+    HandleFireBallCoroutine();
+  }
+
+  void FixedUpdate()
+  {
+    Move();
   }
 
   void SetTransition(AnimationStates state)
@@ -44,7 +53,7 @@ public class Player : MonoBehaviour
     bool isGoingRight = horizontalAxisIntensity > 0;
     bool isGoingLeft = horizontalAxisIntensity < 0;
     bool isStopped = horizontalAxisIntensity == 0;
-    bool isOnTransitionalState = isJumping;
+    bool isOnTransitionalState = isJumping || isFiring;
 
     if (isGoingRight)
     {
@@ -80,6 +89,40 @@ public class Player : MonoBehaviour
         SetTransition(AnimationStates.Jump);
         rigidBody.AddForce(new Vector2(0, jumpForce), ForceMode2D.Impulse);
       }
+    }
+  }
+
+  void HandleFireBallCoroutine()
+  {
+    StartCoroutine("FireBall");
+  }
+
+  IEnumerator FireBall()
+  {
+    if (Input.GetKeyDown(KeyCode.Mouse0))
+    {
+      isFiring = true;
+
+      SetTransition(AnimationStates.Fire);
+
+      GameObject fb = Instantiate(fireBall, firePoint.position, firePoint.rotation);
+
+      bool isGoingRight = transform.rotation.y == 0;
+      bool isGoingLeft = transform.rotation.y == 180;
+
+      if (isGoingRight)
+      {
+        fb.GetComponent<FireBall>().isGoingRight = true;
+      }
+
+      if (isGoingLeft)
+      {
+        fb.GetComponent<FireBall>().isGoingRight = false;
+      }
+
+      yield return new WaitForSeconds(0.25f);
+
+      isFiring = false;
     }
   }
 
