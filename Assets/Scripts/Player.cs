@@ -9,6 +9,8 @@ public class Player : MonoBehaviour
 
   private Rigidbody2D rigidBody;
   private Animator animator;
+  private bool isJumping;
+  private const int GROUND_LAYER = 6;
 
   void Start()
   {
@@ -19,6 +21,7 @@ public class Player : MonoBehaviour
   void Update()
   {
     Move();
+    Jump();
   }
 
   void Move()
@@ -42,6 +45,21 @@ public class Player : MonoBehaviour
 
   void Jump()
   {
+    if (Input.GetButtonDown("Jump"))
+    {
+      if (!isJumping)
+      {
+        isJumping = true;
+        rigidBody.AddForce(new Vector2(0, jumpForce), ForceMode2D.Impulse);
+      }
+    }
+  }
 
+  void OnCollisionEnter2D(Collision2D collision2D)
+  {
+    if (collision2D.gameObject.layer == GROUND_LAYER)
+    {
+      isJumping = false;
+    }
   }
 }
