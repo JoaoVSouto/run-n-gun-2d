@@ -4,6 +4,7 @@ using UnityEngine;
 
 public class Player : MonoBehaviour
 {
+  public int health = 3;
   public float speed;
   public float jumpForce;
   public GameObject fireBall;
@@ -26,6 +27,8 @@ public class Player : MonoBehaviour
   {
     rigidBody = GetComponent<Rigidbody2D>();
     animator = GetComponent<Animator>();
+
+    UpdateLives();
   }
 
   void Update()
@@ -37,6 +40,11 @@ public class Player : MonoBehaviour
   void FixedUpdate()
   {
     Move();
+  }
+
+  void UpdateLives()
+  {
+    GameController.instance.UpdateLives(health);
   }
 
   void SetTransition(AnimationStates state)
@@ -123,6 +131,17 @@ public class Player : MonoBehaviour
       yield return new WaitForSeconds(0.25f);
 
       isFiring = false;
+    }
+  }
+
+  public void OnDamage(int damage)
+  {
+    health -= damage;
+    UpdateLives();
+
+    if (health <= 0)
+    {
+      // TODO: Game over
     }
   }
 
