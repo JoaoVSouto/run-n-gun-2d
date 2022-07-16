@@ -6,14 +6,17 @@ public class Goblin : MonoBehaviour
 {
   public float speed;
   public float walkTowardsDirectionTime;
+  public int health;
 
   private Rigidbody2D rigidBody;
+  private Animator animator;
   private float timer;
   private bool isWalkingToRight;
 
   void Start()
   {
     rigidBody = GetComponent<Rigidbody2D>();
+    animator = GetComponent<Animator>();
   }
 
   void FixedUpdate()
@@ -35,6 +38,18 @@ public class Goblin : MonoBehaviour
     {
       transform.eulerAngles = new Vector2(0, 180);
       rigidBody.velocity = Vector2.left * speed;
+    }
+  }
+
+  public void OnDamage(int damage)
+  {
+    health -= damage;
+    animator.SetTrigger("hit");
+
+    if (health <= 0)
+    {
+      // TODO: add death animation
+      Destroy(gameObject);
     }
   }
 }

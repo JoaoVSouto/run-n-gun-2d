@@ -148,3 +148,4 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   speed: 10
   isGoingRight: 0
+  damage: 1

@@ -6,6 +6,7 @@ public class FireBall : MonoBehaviour
 {
   public float speed;
   public bool isGoingRight;
+  public int damage;
 
   private Rigidbody2D rigidBody;
 
@@ -24,6 +25,15 @@ public class FireBall : MonoBehaviour
     else
     {
       rigidBody.velocity = Vector2.left * speed;
+    }
+  }
+
+  void OnTriggerEnter2D(Collider2D collision)
+  {
+    if (collision.gameObject.tag == "Enemy")
+    {
+      collision.GetComponent<Goblin>().OnDamage(damage);
+      Destroy(gameObject);
     }
   }
 }

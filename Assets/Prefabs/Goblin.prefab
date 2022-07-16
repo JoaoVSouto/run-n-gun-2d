@@ -16,7 +16,7 @@ GameObject:
   - component: {fileID: 6852930005555072088}
   m_Layer: 0
   m_Name: Goblin
-  m_TagString: Untagged
+  m_TagString: Enemy
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -147,8 +147,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a5e31cabf65f9515e849073a835c872e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  speed: 2
+  speed: 0
   walkTowardsDirectionTime: 2
+  health: 5
 --- !u!95 &6852930005555072088
 Animator:
   serializedVersion: 4
