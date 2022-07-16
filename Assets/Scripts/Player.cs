@@ -12,8 +12,11 @@ public class Player : MonoBehaviour
 
   private Rigidbody2D rigidBody;
   private Animator animator;
+  private CircleCollider2D circleCollider;
+  private BoxCollider2D boxCollider;
   private bool isJumping;
   private bool isFiring;
+  private bool isDying;
   private const int GROUND_LAYER = 6;
   private enum AnimationStates
   {
@@ -21,25 +24,34 @@ public class Player : MonoBehaviour
     Run,
     Jump,
     Fire,
+    Die,
   }
 
   void Start()
   {
     rigidBody = GetComponent<Rigidbody2D>();
     animator = GetComponent<Animator>();
+    circleCollider = GetComponent<CircleCollider2D>();
+    boxCollider = GetComponent<BoxCollider2D>();
 
     UpdateLives();
   }
 
   void Update()
   {
-    Jump();
-    HandleFireBallCoroutine();
+    if (health > 0)
+    {
+      Jump();
+      HandleFireBallCoroutine();
+    }
   }
 
   void FixedUpdate()
   {
-    Move();
+    if (health > 0)
+    {
+      Move();
+    }
   }
 
   void UpdateLives()
@@ -61,7 +73,7 @@ public class Player : MonoBehaviour
     bool isGoingRight = horizontalAxisIntensity > 0;
     bool isGoingLeft = horizontalAxisIntensity < 0;
     bool isStopped = horizontalAxisIntensity == 0;
-    bool isOnTransitionalState = isJumping || isFiring;
+    bool isOnTransitionalState = isJumping || isFiring || isDying;
 
     if (isGoingRight)
     {
@@ -151,7 +163,12 @@ public class Player : MonoBehaviour
 
     if (health <= 0)
     {
-      // TODO: Game over
+      isDying = true;
+      circleCollider.isTrigger = true;
+      boxCollider.isTrigger = true;
+      rigidBody.bodyType = UnityEngine.RigidbodyType2D.Kinematic;
+      SetTransition(AnimationStates.Die);
+      GameController.instance.GameOver();
     }
   }
 
