@@ -5655,6 +5655,10 @@ PrefabInstance:
       propertyPath: speed
       value: 2
       objectReference: {fileID: 0}
+    - target: {fileID: 6852930005555072087, guid: 2caf4eba0c44c61cfa352fe35f0454f1, type: 3}
+      propertyPath: damage
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 6852930005555072089, guid: 2caf4eba0c44c61cfa352fe35f0454f1, type: 3}
       propertyPath: m_Name
       value: Goblin

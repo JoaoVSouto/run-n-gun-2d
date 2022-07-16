@@ -7,6 +7,7 @@ public class Goblin : MonoBehaviour
   public float speed;
   public float walkTowardsDirectionTime;
   public int health;
+  public int damage;
 
   private Rigidbody2D rigidBody;
   private Animator animator;
@@ -50,6 +51,14 @@ public class Goblin : MonoBehaviour
     {
       // TODO: add death animation
       Destroy(gameObject);
+    }
+  }
+
+  void OnCollisionEnter2D(Collision2D collision)
+  {
+    if (collision.gameObject.tag == "Player")
+    {
+      collision.gameObject.GetComponent<Player>().OnDamage(damage);
     }
   }
 }

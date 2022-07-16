@@ -138,6 +138,16 @@ public class Player : MonoBehaviour
   {
     health -= damage;
     UpdateLives();
+    animator.SetTrigger("hit");
+
+    if (transform.rotation.y >= 0)
+    {
+      transform.position += new Vector3(-0.5f, 0, 0);
+    }
+    else
+    {
+      transform.position += new Vector3(0.5f, 0, 0);
+    }
 
     if (health <= 0)
     {
