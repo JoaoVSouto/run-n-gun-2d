@@ -11,6 +11,12 @@ public class Player : MonoBehaviour
   private Animator animator;
   private bool isJumping;
   private const int GROUND_LAYER = 6;
+  private enum AnimationStates
+  {
+    Idle,
+    Run,
+    Jump,
+  }
 
   void Start()
   {
@@ -24,6 +30,11 @@ public class Player : MonoBehaviour
     Jump();
   }
 
+  void SetTransition(AnimationStates state)
+  {
+    animator.SetInteger("transition", (int)state);
+  }
+
   void Move()
   {
     float horizontalAxisIntensity = Input.GetAxis("Horizontal");
@@ -32,14 +43,30 @@ public class Player : MonoBehaviour
 
     bool isGoingRight = horizontalAxisIntensity > 0;
     bool isGoingLeft = horizontalAxisIntensity < 0;
+    bool isStopped = horizontalAxisIntensity == 0;
+    bool isOnTransitionalState = isJumping;
 
     if (isGoingRight)
     {
+      if (!isOnTransitionalState)
+      {
+        SetTransition(AnimationStates.Run);
+      }
+
       transform.eulerAngles = new Vector3(0, 0, 0);
     }
     else if (isGoingLeft)
     {
+      if (!isOnTransitionalState)
+      {
+        SetTransition(AnimationStates.Run);
+      }
+
       transform.eulerAngles = new Vector3(0, 180, 0);
+    }
+    else if (isStopped && !isOnTransitionalState)
+    {
+      SetTransition(AnimationStates.Idle);
     }
   }
 
@@ -50,6 +77,7 @@ public class Player : MonoBehaviour
       if (!isJumping)
       {
         isJumping = true;
+        SetTransition(AnimationStates.Jump);
         rigidBody.AddForce(new Vector2(0, jumpForce), ForceMode2D.Impulse);
       }
     }
