@@ -155,6 +155,12 @@ public class Player : MonoBehaviour
     }
   }
 
+  public void AddHealth(int health)
+  {
+    this.health += health;
+    UpdateLives();
+  }
+
   void OnCollisionEnter2D(Collision2D collision2D)
   {
     if (collision2D.gameObject.layer == GROUND_LAYER)
