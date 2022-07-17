@@ -70,8 +70,8 @@ public class MainMenu : MonoBehaviour
         Debug.Log("Success");
         string response = webRequest.downloadHandler.text;
         JObject jsonResponse = JObject.Parse(response);
-        string acessToken = jsonResponse.GetValue("accessToken").ToString();
-        GlobalData.acessToken = acessToken;
+        string accessToken = jsonResponse.GetValue("accessToken").ToString();
+        GlobalData.accessToken = accessToken;
         GlobalData.username = username;
         SceneManager.LoadScene(LOBBY_INDEX);
         break;
