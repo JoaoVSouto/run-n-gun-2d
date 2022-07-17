@@ -3,16 +3,17 @@ using System.Collections.Generic;
 using UnityEngine;
 using TMPro;
 using WebSocketSharp;
+using UnityEngine.SceneManagement;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 public class LobbyController : MonoBehaviour
 {
+  public static int LEVEL_1_BUILD_INDEX = 1;
   public TextMeshProUGUI usernameText;
   public GameObject startGameButton;
 
   WebSocket ws;
 
-  // IDispatcher dispatcher = ...;
   void Start()
   {
     startGameButton.SetActive(false);
@@ -27,12 +28,22 @@ public class LobbyController : MonoBehaviour
       string type = json.GetValue("type").ToString();
       if (type == "GAME_CREATED")
       {
-        // dispatcher.Invoke(() =>
-        // {
-        //   ActiveStartButton();
-        // });
         string gameId = json.GetValue("gameId").ToString();
         GlobalData.gameId = gameId;
+        print(gameId);
+      }
+      if (type == "GAME_JOINED")
+      {
+        string gameId = json.GetValue("gameId").ToString();
+        GlobalData.gameId = gameId;
+        print(gameId);
+      }
+      if (type == "GAME_STARTED")
+      {
+        Dispatcher.Instance.Invoke(() =>
+        {
+          SceneManager.LoadScene(LEVEL_1_BUILD_INDEX);
+        });
       }
       if (type == "GAME_STATS")
       {
@@ -41,12 +52,12 @@ public class LobbyController : MonoBehaviour
         string players = gameJson.GetValue("players").ToString();
         JArray playersJson = JArray.Parse(players);
         List<PlayerServerData> playerList = playersJson.ToObject<List<PlayerServerData>>();
-        print(playerList.Count);
-        print(GlobalData.isHost);
         if (playerList.Count == 2 && GlobalData.isHost)
         {
+          Dispatcher.Instance.Invoke(() =>
+        {
           ActiveStartButton();
-          print("DEU BOM");
+        });
         }
       }
 
@@ -69,6 +80,12 @@ public class LobbyController : MonoBehaviour
   {
     ws.Send("{\"type\":\"JOIN_RANDOM_GAME\", \"accessToken\":\"" + GlobalData.accessToken + "\"}");
     GlobalData.isHost = false;
+  }
+
+  public void StartGame()
+  {
+    SceneManager.LoadScene(LEVEL_1_BUILD_INDEX);
+    ws.Send("{\"type\":\"START_GAME\", \"accessToken\":\"" + GlobalData.accessToken + "\", \"gameId\":\"" + GlobalData.gameId + "\"}");
   }
 
   // Update is called once per frame

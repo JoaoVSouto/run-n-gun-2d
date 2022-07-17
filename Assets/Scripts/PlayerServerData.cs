@@ -12,4 +12,6 @@ public class PlayerServerData : MonoBehaviour
   bool isJumping;
   bool isShooting;
   bool isWalking;
+  float horizontalAxisIntensity;
+  float velocityY;
 }

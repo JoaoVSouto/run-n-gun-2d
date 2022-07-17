@@ -4,7 +4,7 @@ using UnityEngine;
 using WebSocketSharp;
 using Newtonsoft.Json.Linq;
 
-public class Player : MonoBehaviour
+public class Partner : MonoBehaviour
 {
   WebSocket ws;
   public int health = 3;
@@ -30,6 +30,11 @@ public class Player : MonoBehaviour
     Die,
   }
 
+  float horizontalAxisIntensity;
+  private bool isFiringInput;
+
+  private bool isJumpingInput;
+
   void Start()
   {
     rigidBody = GetComponent<Rigidbody2D>();
@@ -46,15 +51,28 @@ public class Player : MonoBehaviour
       string data = e.Data;
       JObject json = JObject.Parse(data);
       string type = json.GetValue("type").ToString();
+      if (type == "GAME_STATS")
+      {
+        horizontalAxisIntensity = float.Parse(json.GetValue("horizontalAxisIntensity").ToString());
+        isFiringInput = bool.Parse(json.GetValue("isFiring").ToString());
+        isJumpingInput = bool.Parse(json.GetValue("isJumping").ToString());
+        print("E agr");
+        Dispatcher.Instance.Invoke(() =>
+        {
+
+
+        });
+      }
     };
-    ws.Send("{\"type\":\"RECONNECT_PLAYER\", \"gameId\": \"" + GlobalData.gameId + "\", \"accessToken\": \"" + GlobalData.accessToken + "\"}");
+    // play mandar position pra sincornizar
+    ws.Send("{\"type\":\"RECONNECT_PARTNER\", \"gameId\": \"" + GlobalData.gameId + "\", \"accessToken\": \"" + GlobalData.accessToken + "\"}");
     if (GlobalData.isHost)
     {
-      gameObject.transform.position = new Vector2(-4.230389f, -2.714f);
+      gameObject.transform.position = new Vector2(-2.8f, -2.714f);
     }
     else
     {
-      gameObject.transform.position = new Vector2(-2.8f, -2.714f);
+      gameObject.transform.position = new Vector2(-4.230389f, -2.714f);
     }
   }
 
@@ -72,12 +90,6 @@ public class Player : MonoBehaviour
     if (health > 0)
     {
       Move();
-      float horizontalAxisIntensity = Input.GetAxis("Horizontal");
-
-      string isJumpingJson = Input.GetButtonDown("Jump") ? "true" : "false";
-      string isFiringJson = Input.GetKeyDown(KeyCode.Mouse0) ? "true" : "false";
-
-      ws.Send("{\"type\":\"UPDATE_PLAYER\", \"isJumping\":" + isJumpingJson + ", \"isFiring\":" + isFiringJson + ", \"horizontalAxisIntensity\": " + horizontalAxisIntensity + ", \"velocityY\": " + rigidBody.velocity.y + ", \"gameId\": \"" + GlobalData.gameId + "\", \"accessToken\": \"" + GlobalData.accessToken + "\"}");
     }
   }
 
@@ -93,7 +105,6 @@ public class Player : MonoBehaviour
 
   void Move()
   {
-    float horizontalAxisIntensity = Input.GetAxis("Horizontal");
 
     rigidBody.velocity = new Vector2(horizontalAxisIntensity * speed, rigidBody.velocity.y);
 
@@ -128,7 +139,7 @@ public class Player : MonoBehaviour
 
   void Jump()
   {
-    if (Input.GetButtonDown("Jump"))
+    if (isJumpingInput)
     {
       if (!isJumping)
       {
@@ -146,7 +157,7 @@ public class Player : MonoBehaviour
 
   IEnumerator FireBall()
   {
-    if (Input.GetKeyDown(KeyCode.Mouse0))
+    if (isFiringInput)
     {
       isFiring = true;
 
