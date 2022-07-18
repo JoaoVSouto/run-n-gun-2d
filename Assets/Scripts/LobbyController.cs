@@ -10,9 +10,15 @@ public class LobbyController : MonoBehaviour
 {
   public static int LEVEL_1_BUILD_INDEX = 1;
   public TextMeshProUGUI usernameText;
+  public TextMeshProUGUI chatText;
+  public TMP_InputField messageInput;
   public GameObject startGameButton;
 
   WebSocket ws;
+
+  string message;
+
+  bool isActive = false;
 
   void Start()
   {
@@ -45,6 +51,34 @@ public class LobbyController : MonoBehaviour
           SceneManager.LoadScene(LEVEL_1_BUILD_INDEX);
         });
       }
+      if (type == "LOBBY")
+      {
+        string chatJson = json.GetValue("chat").ToString();
+        JArray chatArray = JArray.Parse(chatJson);
+        List<string> chat = chatArray.ToObject<List<string>>();
+        Dispatcher.Instance.Invoke(() =>
+        {
+          chatText.text = "";
+          foreach (string chatMessage in chat)
+          {
+            chatText.text += chatMessage + "\n";
+          }
+        });
+      }
+      if (type == "MESSAGE_CHAT")
+      {
+        string chatJson = json.GetValue("chat").ToString();
+        JArray chatArray = JArray.Parse(chatJson);
+        List<string> chat = chatArray.ToObject<List<string>>();
+        Dispatcher.Instance.Invoke(() =>
+        {
+          chatText.text = "";
+          foreach (string chatMessage in chat)
+          {
+            chatText.text += chatMessage + "\n";
+          }
+        });
+      }
       if (type == "GAME_STATS")
       {
         string gameData = json.GetValue("game").ToString();
@@ -52,8 +86,9 @@ public class LobbyController : MonoBehaviour
         string players = gameJson.GetValue("players").ToString();
         JArray playersJson = JArray.Parse(players);
         List<PlayerServerData> playerList = playersJson.ToObject<List<PlayerServerData>>();
-        if (playerList.Count == 2 && GlobalData.isHost)
+        if (playerList.Count == 2 && GlobalData.isHost && !isActive)
         {
+          isActive = true;
           Dispatcher.Instance.Invoke(() =>
         {
           ActiveStartButton();
@@ -63,6 +98,18 @@ public class LobbyController : MonoBehaviour
 
     };
     ws.Send("{\"type\":\"GET_LOBBY\"}");
+  }
+
+  public void SendMessage()
+  {
+    ws.Send("{\"type\":\"SEND_MESSAGE_CHAT\", \"message\": \"" + message + "\", \"accessToken\": \"" + GlobalData.accessToken + "\"}");
+    messageInput.text = "";
+    message = "";
+  }
+
+  public void ReadMessage(string s)
+  {
+    message = s;
   }
 
   void ActiveStartButton()

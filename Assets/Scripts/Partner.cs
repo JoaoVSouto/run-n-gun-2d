@@ -35,6 +35,10 @@ public class Partner : MonoBehaviour
 
   private bool isJumpingInput;
 
+  float x;
+
+  float y;
+
   void Start()
   {
     rigidBody = GetComponent<Rigidbody2D>();
@@ -53,16 +57,22 @@ public class Partner : MonoBehaviour
       string type = json.GetValue("type").ToString();
       if (type == "GAME_STATS")
       {
-        print("E agr");
         horizontalAxisIntensity = float.Parse(json.GetValue("horizontalAxisIntensity").ToString());
         isFiringInput = bool.Parse(json.GetValue("isFiring").ToString());
         isJumpingInput = bool.Parse(json.GetValue("isJumping").ToString());
-        print(isJumpingInput);
+        print("DISPATCHER1");
+        x = float.Parse(json.GetValue("x").ToString());
+        print("DISPATCHER2");
+        y = float.Parse(json.GetValue("y").ToString());
+        print("DISPATCHER3");
         Dispatcher.Instance.Invoke(() =>
         {
-
-
+          print("x: " + x);
+          print("y: " + y);
+          gameObject.transform.position = new Vector2(x, y);
+          print("DEUBOM");
         });
+        print("DISPATCHER4");
       }
     };
     // play mandar position pra sincornizar
