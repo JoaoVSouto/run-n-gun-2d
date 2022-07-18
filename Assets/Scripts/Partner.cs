@@ -53,10 +53,11 @@ public class Partner : MonoBehaviour
       string type = json.GetValue("type").ToString();
       if (type == "GAME_STATS")
       {
+        print("E agr");
         horizontalAxisIntensity = float.Parse(json.GetValue("horizontalAxisIntensity").ToString());
         isFiringInput = bool.Parse(json.GetValue("isFiring").ToString());
         isJumpingInput = bool.Parse(json.GetValue("isJumping").ToString());
-        print("E agr");
+        print(isJumpingInput);
         Dispatcher.Instance.Invoke(() =>
         {
 

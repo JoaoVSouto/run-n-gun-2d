@@ -72,12 +72,6 @@ public class Player : MonoBehaviour
     if (health > 0)
     {
       Move();
-      float horizontalAxisIntensity = Input.GetAxis("Horizontal");
-
-      string isJumpingJson = Input.GetButtonDown("Jump") ? "true" : "false";
-      string isFiringJson = Input.GetKeyDown(KeyCode.Mouse0) ? "true" : "false";
-
-      ws.Send("{\"type\":\"UPDATE_PLAYER\", \"isJumping\":" + isJumpingJson + ", \"isFiring\":" + isFiringJson + ", \"horizontalAxisIntensity\": " + horizontalAxisIntensity + ", \"velocityY\": " + rigidBody.velocity.y + ", \"gameId\": \"" + GlobalData.gameId + "\", \"accessToken\": \"" + GlobalData.accessToken + "\"}");
     }
   }
 
@@ -128,7 +122,13 @@ public class Player : MonoBehaviour
 
   void Jump()
   {
-    if (Input.GetButtonDown("Jump"))
+    float horizontalAxisIntensity = Input.GetAxis("Horizontal");
+
+    string isJumpingJson = Input.GetButtonDown("Jump") ? "true" : "false";
+    string isFiringJson = Input.GetKeyDown(KeyCode.Mouse0) ? "true" : "false";
+
+    ws.Send("{\"type\":\"UPDATE_PLAYER\", \"isJumping\":" + isJumpingJson + ", \"isFiring\":" + isFiringJson + ", \"horizontalAxisIntensity\": " + horizontalAxisIntensity + ", \"velocityY\": " + rigidBody.velocity.y + ", \"gameId\": \"" + GlobalData.gameId + "\", \"accessToken\": \"" + GlobalData.accessToken + "\"}");
+    if (isJumpingJson == "true")
     {
       if (!isJumping)
       {
@@ -146,7 +146,13 @@ public class Player : MonoBehaviour
 
   IEnumerator FireBall()
   {
-    if (Input.GetKeyDown(KeyCode.Mouse0))
+    float horizontalAxisIntensity = Input.GetAxis("Horizontal");
+
+    string isJumpingJson = Input.GetButtonDown("Jump") ? "true" : "false";
+    string isFiringJson = Input.GetKeyDown(KeyCode.Mouse0) ? "true" : "false";
+
+    ws.Send("{\"type\":\"UPDATE_PLAYER\", \"isJumping\":" + isJumpingJson + ", \"isFiring\":" + isFiringJson + ", \"horizontalAxisIntensity\": " + horizontalAxisIntensity + ", \"velocityY\": " + rigidBody.velocity.y + ", \"gameId\": \"" + GlobalData.gameId + "\", \"accessToken\": \"" + GlobalData.accessToken + "\"}");
+    if (isFiringJson == "true")
     {
       isFiring = true;
 
