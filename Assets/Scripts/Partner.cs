@@ -39,12 +39,15 @@ public class Partner : MonoBehaviour
 
   float y;
 
+  bool isAlive;
+
   void Start()
   {
     rigidBody = GetComponent<Rigidbody2D>();
     animator = GetComponent<Animator>();
     circleCollider = GetComponent<CircleCollider2D>();
     boxCollider = GetComponent<BoxCollider2D>();
+    isAlive = true;
 
     UpdateLives();
 
@@ -60,19 +63,16 @@ public class Partner : MonoBehaviour
         horizontalAxisIntensity = float.Parse(json.GetValue("horizontalAxisIntensity").ToString());
         isFiringInput = bool.Parse(json.GetValue("isFiring").ToString());
         isJumpingInput = bool.Parse(json.GetValue("isJumping").ToString());
-        print("DISPATCHER1");
         x = float.Parse(json.GetValue("x").ToString());
-        print("DISPATCHER2");
         y = float.Parse(json.GetValue("y").ToString());
-        print("DISPATCHER3");
         Dispatcher.Instance.Invoke(() =>
         {
-          print("x: " + x);
-          print("y: " + y);
           gameObject.transform.position = new Vector2(x, y);
-          print("DEUBOM");
         });
-        print("DISPATCHER4");
+      }
+      if (type == "PARTNER_DYING")
+      {
+        isAlive = false;
       }
     };
     // play mandar position pra sincornizar
@@ -93,6 +93,15 @@ public class Partner : MonoBehaviour
     {
       Jump();
       HandleFireBallCoroutine();
+    }
+    if (!isAlive)
+    {
+      isDying = true;
+      circleCollider.isTrigger = true;
+      boxCollider.isTrigger = true;
+      rigidBody.bodyType = UnityEngine.RigidbodyType2D.Kinematic;
+      SetTransition(AnimationStates.Die);
+      // GameController.instance.GameOver();
     }
   }
 
@@ -217,7 +226,7 @@ public class Partner : MonoBehaviour
       boxCollider.isTrigger = true;
       rigidBody.bodyType = UnityEngine.RigidbodyType2D.Kinematic;
       SetTransition(AnimationStates.Die);
-      GameController.instance.GameOver();
+      // GameController.instance.GameOver();
     }
   }
 

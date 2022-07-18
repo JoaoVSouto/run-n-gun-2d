@@ -196,6 +196,7 @@ public class Player : MonoBehaviour
 
     if (health <= 0)
     {
+      ws.Send("{\"type\":\"PLAYER_DYING\", \"accessToken\": \"" + GlobalData.accessToken + "\", \"gameId\": \"" + GlobalData.gameId + "\"}");
       isDying = true;
       circleCollider.isTrigger = true;
       boxCollider.isTrigger = true;

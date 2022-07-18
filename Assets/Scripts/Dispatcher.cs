@@ -31,11 +31,20 @@ public class Dispatcher : IDispatcher
 
   public void InvokePending()
   {
-    foreach (var action in pending)
+    try
     {
-      action(); // Invoke the action.
+      foreach (var action in pending)
+      {
+        action(); // Invoke the action.
+      }
     }
-
-    pending.Clear(); // Clear the pending list.
+    catch (Exception e)
+    {
+      // Debug.Log(e);
+    }
+    finally
+    {
+      pending.Clear();
+    }
   }
 }

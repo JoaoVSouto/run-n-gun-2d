@@ -15,7 +15,7 @@ public class GameController : MonoBehaviour
 
   public static GameController instance;
 
-  private static int MAIN_MENU_BUILD_INDEX = 0;
+  private static int LOBBY_BUILD_INDEX = 3;
 
   void Awake()
   {
@@ -43,6 +43,6 @@ public class GameController : MonoBehaviour
 
   public void Restart()
   {
-    SceneManager.LoadScene(MAIN_MENU_BUILD_INDEX);
+    SceneManager.LoadScene(LOBBY_BUILD_INDEX);
   }
 }
