@@ -1,9 +1,12 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using WebSocketSharp;
+using Newtonsoft.Json.Linq;
 
 public class Player : MonoBehaviour
 {
+  WebSocket ws;
   public int health = 3;
   public float speed;
   public float jumpForce;
@@ -35,6 +38,24 @@ public class Player : MonoBehaviour
     boxCollider = GetComponent<BoxCollider2D>();
 
     UpdateLives();
+
+    ws = new WebSocket("ws://localhost:3000");
+    ws.Connect();
+    ws.OnMessage += (sender, e) =>
+    {
+      string data = e.Data;
+      JObject json = JObject.Parse(data);
+      string type = json.GetValue("type").ToString();
+    };
+    ws.Send("{\"type\":\"RECONNECT_PLAYER\", \"gameId\": \"" + GlobalData.gameId + "\", \"accessToken\": \"" + GlobalData.accessToken + "\"}");
+    if (GlobalData.isHost)
+    {
+      gameObject.transform.position = new Vector2(-4.230389f, -2.714f);
+    }
+    else
+    {
+      gameObject.transform.position = new Vector2(-2.8f, -2.714f);
+    }
   }
 
   void Update()
@@ -101,7 +122,13 @@ public class Player : MonoBehaviour
 
   void Jump()
   {
-    if (Input.GetButtonDown("Jump"))
+    float horizontalAxisIntensity = Input.GetAxis("Horizontal");
+
+    string isJumpingJson = Input.GetButtonDown("Jump") ? "true" : "false";
+    string isFiringJson = Input.GetKeyDown(KeyCode.Mouse0) ? "true" : "false";
+
+    ws.Send("{\"type\":\"UPDATE_PLAYER\", \"isJumping\":" + isJumpingJson + ", \"isFiring\":" + isFiringJson + ", \"horizontalAxisIntensity\": " + horizontalAxisIntensity + ", \"velocityY\": " + rigidBody.velocity.y + ", \"gameId\": \"" + GlobalData.gameId + "\", \"accessToken\": \"" + GlobalData.accessToken + "\", \"x\": " + transform.position.x + ", \"y\": " + transform.position.y + "}");
+    if (isJumpingJson == "true")
     {
       if (!isJumping)
       {
@@ -119,7 +146,13 @@ public class Player : MonoBehaviour
 
   IEnumerator FireBall()
   {
-    if (Input.GetKeyDown(KeyCode.Mouse0))
+    float horizontalAxisIntensity = Input.GetAxis("Horizontal");
+
+    string isJumpingJson = Input.GetButtonDown("Jump") ? "true" : "false";
+    string isFiringJson = Input.GetKeyDown(KeyCode.Mouse0) ? "true" : "false";
+
+    ws.Send("{\"type\":\"UPDATE_PLAYER\", \"isJumping\":" + isJumpingJson + ", \"isFiring\":" + isFiringJson + ", \"horizontalAxisIntensity\": " + horizontalAxisIntensity + ", \"velocityY\": " + rigidBody.velocity.y + ", \"gameId\": \"" + GlobalData.gameId + "\", \"accessToken\": \"" + GlobalData.accessToken + "\", \"x\": " + transform.position.x + ", \"y\": " + transform.position.y + "}");
+    if (isFiringJson == "true")
     {
       isFiring = true;
 
