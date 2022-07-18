@@ -12,11 +12,35 @@ public class Cam : MonoBehaviour
     player = GameObject.FindGameObjectWithTag("Player").transform;
   }
 
+  float getCameraYByLevel()
+  {
+    switch (CurrentLevel.Instance.getCurrentLevel())
+    {
+      case 1:
+        return 0;
+      case 2:
+      default:
+        return -13.24f;
+    }
+  }
+
+  bool getPlayerPositionByLevel()
+  {
+    switch (CurrentLevel.Instance.getCurrentLevel())
+    {
+      case 1:
+        return player.position.x >= -5 && player.position.x <= 20;
+      case 2:
+      default:
+        return player.position.x >= -5 && player.position.x <= 20;
+    }
+  }
+
   void LateUpdate()
   {
-    if (player != null && player.position.x >= 0 && player.position.x <= 18)
+    if (player != null && getPlayerPositionByLevel())
     {
-      Vector3 playerPosition = new Vector3(player.position.x, transform.position.y, transform.position.z);
+      Vector3 playerPosition = new Vector3(player.position.x, getCameraYByLevel(), transform.position.z);
       transform.position = Vector3.Lerp(transform.position, playerPosition, smooth * Time.deltaTime);
     }
   }

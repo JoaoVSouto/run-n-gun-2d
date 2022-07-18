@@ -39,12 +39,15 @@ public class Partner : MonoBehaviour
 
   float y;
 
+  bool isAlive;
+
   void Start()
   {
     rigidBody = GetComponent<Rigidbody2D>();
     animator = GetComponent<Animator>();
     circleCollider = GetComponent<CircleCollider2D>();
     boxCollider = GetComponent<BoxCollider2D>();
+    isAlive = true;
 
     UpdateLives();
 
@@ -57,22 +60,37 @@ public class Partner : MonoBehaviour
       string type = json.GetValue("type").ToString();
       if (type == "GAME_STATS")
       {
-        horizontalAxisIntensity = float.Parse(json.GetValue("horizontalAxisIntensity").ToString());
         isFiringInput = bool.Parse(json.GetValue("isFiring").ToString());
         isJumpingInput = bool.Parse(json.GetValue("isJumping").ToString());
-        print("DISPATCHER1");
+      }
+      if (type == "PARTNER_DYING")
+      {
+        isAlive = false;
+      }
+      if (type == "PARTNER_MOVE")
+      {
+        horizontalAxisIntensity = float.Parse(json.GetValue("horizontalAxisIntensity").ToString());
         x = float.Parse(json.GetValue("x").ToString());
-        print("DISPATCHER2");
         y = float.Parse(json.GetValue("y").ToString());
-        print("DISPATCHER3");
         Dispatcher.Instance.Invoke(() =>
         {
-          print("x: " + x);
-          print("y: " + y);
           gameObject.transform.position = new Vector2(x, y);
-          print("DEUBOM");
         });
-        print("DISPATCHER4");
+      }
+      if (type == "PARTNER_FIRING")
+      {
+        isFiringInput = bool.Parse(json.GetValue("isFiring").ToString());
+      }
+      if (type == "PARTNER_JUMPING")
+      {
+        x = float.Parse(json.GetValue("x").ToString());
+        y = float.Parse(json.GetValue("y").ToString());
+        isJumpingInput = bool.Parse(json.GetValue("isJumping").ToString());
+        horizontalAxisIntensity = float.Parse(json.GetValue("horizontalAxisIntensity").ToString());
+        Dispatcher.Instance.Invoke(() =>
+        {
+          gameObject.transform.position = new Vector2(x, y);
+        });
       }
     };
     // play mandar position pra sincornizar
@@ -93,6 +111,15 @@ public class Partner : MonoBehaviour
     {
       Jump();
       HandleFireBallCoroutine();
+    }
+    if (!isAlive)
+    {
+      isDying = true;
+      circleCollider.isTrigger = true;
+      boxCollider.isTrigger = true;
+      rigidBody.bodyType = UnityEngine.RigidbodyType2D.Kinematic;
+      SetTransition(AnimationStates.Die);
+      // GameController.instance.GameOver();
     }
   }
 
@@ -217,7 +244,7 @@ public class Partner : MonoBehaviour
       boxCollider.isTrigger = true;
       rigidBody.bodyType = UnityEngine.RigidbodyType2D.Kinematic;
       SetTransition(AnimationStates.Die);
-      GameController.instance.GameOver();
+      // GameController.instance.GameOver();
     }
   }
 

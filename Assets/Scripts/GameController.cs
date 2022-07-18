@@ -9,18 +9,21 @@ public class GameController : MonoBehaviour
   public Text healthText;
   public Text scoreText;
   public GameObject gameOverObject;
+  public GameObject gameWinObject;
 
   private int score;
   private bool isGameOver;
+  private bool isGameWon;
 
   public static GameController instance;
 
-  private static int MAIN_MENU_BUILD_INDEX = 0;
+  private static int LOBBY_BUILD_INDEX = 3;
 
   void Awake()
   {
     instance = this;
   }
+
   public void AddScore(int score)
   {
     this.score += score;
@@ -29,7 +32,7 @@ public class GameController : MonoBehaviour
 
   public void UpdateLives(int value)
   {
-    if (!isGameOver)
+    if (!isGameOver && !isGameWon)
     {
       healthText.text = "x " + value.ToString();
     }
@@ -41,8 +44,14 @@ public class GameController : MonoBehaviour
     gameOverObject.SetActive(true);
   }
 
+  public void GameWon()
+  {
+    isGameOver = true;
+    gameWinObject.SetActive(true);
+  }
+
   public void Restart()
   {
-    SceneManager.LoadScene(MAIN_MENU_BUILD_INDEX);
+    SceneManager.LoadScene(LOBBY_BUILD_INDEX);
   }
 }

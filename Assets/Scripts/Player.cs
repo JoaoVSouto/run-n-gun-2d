@@ -12,6 +12,7 @@ public class Player : MonoBehaviour
   public float jumpForce;
   public GameObject fireBall;
   public Transform firePoint;
+  public Transform level2InitialPoint;
 
   private Rigidbody2D rigidBody;
   private Animator animator;
@@ -89,6 +90,8 @@ public class Player : MonoBehaviour
   {
     float horizontalAxisIntensity = Input.GetAxis("Horizontal");
 
+    ws.Send("{\"type\":\"PLAYER_MOVE\", \"horizontalAxisIntensity\": " + horizontalAxisIntensity + ", \"velocityY\": " + rigidBody.velocity.y + ", \"gameId\": \"" + GlobalData.gameId + "\", \"accessToken\": \"" + GlobalData.accessToken + "\", \"x\": " + transform.position.x + ", \"y\": " + transform.position.y + ", \"userId\": \"" + GlobalData.userId + "\"}");
+
     rigidBody.velocity = new Vector2(horizontalAxisIntensity * speed, rigidBody.velocity.y);
 
     bool isGoingRight = horizontalAxisIntensity > 0;
@@ -122,12 +125,9 @@ public class Player : MonoBehaviour
 
   void Jump()
   {
-    float horizontalAxisIntensity = Input.GetAxis("Horizontal");
-
     string isJumpingJson = Input.GetButtonDown("Jump") ? "true" : "false";
-    string isFiringJson = Input.GetKeyDown(KeyCode.Mouse0) ? "true" : "false";
 
-    ws.Send("{\"type\":\"UPDATE_PLAYER\", \"isJumping\":" + isJumpingJson + ", \"isFiring\":" + isFiringJson + ", \"horizontalAxisIntensity\": " + horizontalAxisIntensity + ", \"velocityY\": " + rigidBody.velocity.y + ", \"gameId\": \"" + GlobalData.gameId + "\", \"accessToken\": \"" + GlobalData.accessToken + "\", \"x\": " + transform.position.x + ", \"y\": " + transform.position.y + "}");
+    ws.Send("{\"type\":\"PLAYER_JUMPING\", \"isJumping\":" + isJumpingJson + ", \"gameId\": \"" + GlobalData.gameId + "\", \"accessToken\": \"" + GlobalData.accessToken + "\", \"x\": " + transform.position.x + ", \"y\": " + transform.position.y + ", \"horizontalAxisIntensity\": " + Input.GetAxis("Horizontal") + ", \"userId\": \"" + GlobalData.userId + "\"}");
     if (isJumpingJson == "true")
     {
       if (!isJumping)
@@ -146,12 +146,9 @@ public class Player : MonoBehaviour
 
   IEnumerator FireBall()
   {
-    float horizontalAxisIntensity = Input.GetAxis("Horizontal");
-
-    string isJumpingJson = Input.GetButtonDown("Jump") ? "true" : "false";
     string isFiringJson = Input.GetKeyDown(KeyCode.Mouse0) ? "true" : "false";
 
-    ws.Send("{\"type\":\"UPDATE_PLAYER\", \"isJumping\":" + isJumpingJson + ", \"isFiring\":" + isFiringJson + ", \"horizontalAxisIntensity\": " + horizontalAxisIntensity + ", \"velocityY\": " + rigidBody.velocity.y + ", \"gameId\": \"" + GlobalData.gameId + "\", \"accessToken\": \"" + GlobalData.accessToken + "\", \"x\": " + transform.position.x + ", \"y\": " + transform.position.y + "}");
+    ws.Send("{\"type\":\"PLAYER_FIRING\", \"isFiring\":" + isFiringJson + ", \"accessToken\": \"" + GlobalData.accessToken + "\", \"x\": " + transform.position.x + ", \"y\": " + transform.position.y + ", \"gameId\": \"" + GlobalData.gameId + "\", \"userId\": \"" + GlobalData.userId + "\"}");
     if (isFiringJson == "true")
     {
       isFiring = true;
@@ -196,6 +193,7 @@ public class Player : MonoBehaviour
 
     if (health <= 0)
     {
+      ws.Send("{\"type\":\"PLAYER_DYING\", \"accessToken\": \"" + GlobalData.accessToken + "\", \"gameId\": \"" + GlobalData.gameId + "\"}");
       isDying = true;
       circleCollider.isTrigger = true;
       boxCollider.isTrigger = true;
@@ -216,6 +214,21 @@ public class Player : MonoBehaviour
     if (collision2D.gameObject.layer == GROUND_LAYER)
     {
       isJumping = false;
+    }
+  }
+
+  void OnTriggerEnter2D(Collider2D collision)
+  {
+    if (collision.gameObject.tag == "Door")
+    {
+      transform.position = new Vector2(level2InitialPoint.position.x, level2InitialPoint.position.y);
+      CurrentLevel.Instance.setCurrentLevel(2);
+    }
+
+    if (collision.gameObject.tag == "Treasure")
+    {
+      GameController.instance.GameWon();
+      Destroy(gameObject);
     }
   }
 }
