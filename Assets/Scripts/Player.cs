@@ -89,6 +89,8 @@ public class Player : MonoBehaviour
   {
     float horizontalAxisIntensity = Input.GetAxis("Horizontal");
 
+    ws.Send("{\"type\":\"PLAYER_MOVE\", \"horizontalAxisIntensity\": " + horizontalAxisIntensity + ", \"velocityY\": " + rigidBody.velocity.y + ", \"gameId\": \"" + GlobalData.gameId + "\", \"accessToken\": \"" + GlobalData.accessToken + "\", \"x\": " + transform.position.x + ", \"y\": " + transform.position.y + ", \"userId\": \"" + GlobalData.userId + "\"}");
+
     rigidBody.velocity = new Vector2(horizontalAxisIntensity * speed, rigidBody.velocity.y);
 
     bool isGoingRight = horizontalAxisIntensity > 0;
@@ -122,12 +124,9 @@ public class Player : MonoBehaviour
 
   void Jump()
   {
-    float horizontalAxisIntensity = Input.GetAxis("Horizontal");
-
     string isJumpingJson = Input.GetButtonDown("Jump") ? "true" : "false";
-    string isFiringJson = Input.GetKeyDown(KeyCode.Mouse0) ? "true" : "false";
 
-    ws.Send("{\"type\":\"UPDATE_PLAYER\", \"isJumping\":" + isJumpingJson + ", \"isFiring\":" + isFiringJson + ", \"horizontalAxisIntensity\": " + horizontalAxisIntensity + ", \"velocityY\": " + rigidBody.velocity.y + ", \"gameId\": \"" + GlobalData.gameId + "\", \"accessToken\": \"" + GlobalData.accessToken + "\", \"x\": " + transform.position.x + ", \"y\": " + transform.position.y + "}");
+    ws.Send("{\"type\":\"PLAYER_JUMPING\", \"isJumping\":" + isJumpingJson + ", \"gameId\": \"" + GlobalData.gameId + "\", \"accessToken\": \"" + GlobalData.accessToken + "\", \"x\": " + transform.position.x + ", \"y\": " + transform.position.y + ", \"horizontalAxisIntensity\": " + Input.GetAxis("Horizontal") + ", \"userId\": \"" + GlobalData.userId + "\"}");
     if (isJumpingJson == "true")
     {
       if (!isJumping)
@@ -146,12 +145,9 @@ public class Player : MonoBehaviour
 
   IEnumerator FireBall()
   {
-    float horizontalAxisIntensity = Input.GetAxis("Horizontal");
-
-    string isJumpingJson = Input.GetButtonDown("Jump") ? "true" : "false";
     string isFiringJson = Input.GetKeyDown(KeyCode.Mouse0) ? "true" : "false";
 
-    ws.Send("{\"type\":\"UPDATE_PLAYER\", \"isJumping\":" + isJumpingJson + ", \"isFiring\":" + isFiringJson + ", \"horizontalAxisIntensity\": " + horizontalAxisIntensity + ", \"velocityY\": " + rigidBody.velocity.y + ", \"gameId\": \"" + GlobalData.gameId + "\", \"accessToken\": \"" + GlobalData.accessToken + "\", \"x\": " + transform.position.x + ", \"y\": " + transform.position.y + "}");
+    ws.Send("{\"type\":\"PLAYER_FIRING\", \"isFiring\":" + isFiringJson + ", \"accessToken\": \"" + GlobalData.accessToken + "\", \"x\": " + transform.position.x + ", \"y\": " + transform.position.y + ", \"gameId\": \"" + GlobalData.gameId + "\", \"userId\": \"" + GlobalData.userId + "\"}");
     if (isFiringJson == "true")
     {
       isFiring = true;

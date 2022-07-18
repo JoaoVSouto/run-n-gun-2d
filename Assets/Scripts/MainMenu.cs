@@ -71,8 +71,10 @@ public class MainMenu : MonoBehaviour
         string response = webRequest.downloadHandler.text;
         JObject jsonResponse = JObject.Parse(response);
         string accessToken = jsonResponse.GetValue("accessToken").ToString();
+        string userId = jsonResponse.GetValue("userId").ToString();
         GlobalData.accessToken = accessToken;
         GlobalData.username = username;
+        GlobalData.userId = userId;
         SceneManager.LoadScene(LOBBY_INDEX);
         break;
       case UnityWebRequest.Result.ConnectionError:

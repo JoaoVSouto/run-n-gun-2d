@@ -60,9 +60,16 @@ public class Partner : MonoBehaviour
       string type = json.GetValue("type").ToString();
       if (type == "GAME_STATS")
       {
-        horizontalAxisIntensity = float.Parse(json.GetValue("horizontalAxisIntensity").ToString());
         isFiringInput = bool.Parse(json.GetValue("isFiring").ToString());
         isJumpingInput = bool.Parse(json.GetValue("isJumping").ToString());
+      }
+      if (type == "PARTNER_DYING")
+      {
+        isAlive = false;
+      }
+      if (type == "PARTNER_MOVE")
+      {
+        horizontalAxisIntensity = float.Parse(json.GetValue("horizontalAxisIntensity").ToString());
         x = float.Parse(json.GetValue("x").ToString());
         y = float.Parse(json.GetValue("y").ToString());
         Dispatcher.Instance.Invoke(() =>
@@ -70,9 +77,20 @@ public class Partner : MonoBehaviour
           gameObject.transform.position = new Vector2(x, y);
         });
       }
-      if (type == "PARTNER_DYING")
+      if (type == "PARTNER_FIRING")
       {
-        isAlive = false;
+        isFiringInput = bool.Parse(json.GetValue("isFiring").ToString());
+      }
+      if (type == "PARTNER_JUMPING")
+      {
+        x = float.Parse(json.GetValue("x").ToString());
+        y = float.Parse(json.GetValue("y").ToString());
+        isJumpingInput = bool.Parse(json.GetValue("isJumping").ToString());
+        horizontalAxisIntensity = float.Parse(json.GetValue("horizontalAxisIntensity").ToString());
+        Dispatcher.Instance.Invoke(() =>
+        {
+          gameObject.transform.position = new Vector2(x, y);
+        });
       }
     };
     // play mandar position pra sincornizar
