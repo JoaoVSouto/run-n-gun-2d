@@ -146,7 +146,7 @@ public class Player : MonoBehaviour
 
   IEnumerator FireBall()
   {
-    string isFiringJson = Input.GetKeyDown(KeyCode.Mouse0) ? "true" : "false";
+    string isFiringJson = Input.GetKeyDown(KeyCode.Mouse0) || Input.GetKeyDown(KeyCode.X) ? "true" : "false";
 
     ws.Send("{\"type\":\"PLAYER_FIRING\", \"isFiring\":" + isFiringJson + ", \"accessToken\": \"" + GlobalData.accessToken + "\", \"x\": " + transform.position.x + ", \"y\": " + transform.position.y + ", \"gameId\": \"" + GlobalData.gameId + "\", \"userId\": \"" + GlobalData.userId + "\"}");
     if (isFiringJson == "true")

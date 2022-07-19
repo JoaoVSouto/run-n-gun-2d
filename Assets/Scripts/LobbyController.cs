@@ -100,11 +100,22 @@ public class LobbyController : MonoBehaviour
     ws.Send("{\"type\":\"GET_LOBBY\"}");
   }
 
+  void FixedUpdate()
+  {
+    if (Input.GetKeyDown(KeyCode.Return))
+    {
+      SendMessage();
+    }
+  }
+
   public void SendMessage()
   {
-    ws.Send("{\"type\":\"SEND_MESSAGE_CHAT\", \"message\": \"" + message + "\", \"accessToken\": \"" + GlobalData.accessToken + "\"}");
-    messageInput.text = "";
-    message = "";
+    if (messageInput.text != "")
+    {
+      ws.Send("{\"type\":\"SEND_MESSAGE_CHAT\", \"message\": \"" + message + "\", \"accessToken\": \"" + GlobalData.accessToken + "\"}");
+      messageInput.text = "";
+      message = "";
+    }
   }
 
   public void ReadMessage(string s)
