@@ -79,17 +79,31 @@ public class Partner : MonoBehaviour
       }
       if (type == "PARTNER_FIRING")
       {
-        isFiringInput = bool.Parse(json.GetValue("isFiring").ToString());
+        Dispatcher.Instance.Invoke(() =>
+        {
+          if (bool.Parse(json.GetValue("isFiring").ToString()))
+            StartCoroutine("FireBall");
+        });
       }
       if (type == "PARTNER_JUMPING")
       {
         x = float.Parse(json.GetValue("x").ToString());
         y = float.Parse(json.GetValue("y").ToString());
-        isJumpingInput = bool.Parse(json.GetValue("isJumping").ToString());
         horizontalAxisIntensity = float.Parse(json.GetValue("horizontalAxisIntensity").ToString());
         Dispatcher.Instance.Invoke(() =>
         {
+          if (bool.Parse(json.GetValue("isJumping").ToString()))
+          {
+            Jump();
+          }
           gameObject.transform.position = new Vector2(x, y);
+        });
+      }
+      if (type == "PARTNER_WON")
+      {
+        Dispatcher.Instance.Invoke(() =>
+        {
+          Destroy(gameObject);
         });
       }
     };
@@ -109,8 +123,8 @@ public class Partner : MonoBehaviour
   {
     if (health > 0)
     {
-      Jump();
-      HandleFireBallCoroutine();
+      // Jump();
+      // HandleFireBallCoroutine();
     }
     if (!isAlive)
     {
@@ -177,7 +191,7 @@ public class Partner : MonoBehaviour
 
   void Jump()
   {
-    if (isJumpingInput)
+    if (true)
     {
       if (!isJumping)
       {
@@ -195,7 +209,7 @@ public class Partner : MonoBehaviour
 
   IEnumerator FireBall()
   {
-    if (isFiringInput)
+    if (true)
     {
       isFiring = true;
 
