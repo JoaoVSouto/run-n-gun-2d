@@ -82,7 +82,11 @@ public class Partner : MonoBehaviour
         Dispatcher.Instance.Invoke(() =>
         {
           if (bool.Parse(json.GetValue("isFiring").ToString()))
+          {
+            x = float.Parse(json.GetValue("x").ToString());
+            y = float.Parse(json.GetValue("y").ToString());
             StartCoroutine("FireBall");
+          }
         });
       }
       if (type == "PARTNER_JUMPING")
