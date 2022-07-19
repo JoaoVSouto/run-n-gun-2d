@@ -251,7 +251,9 @@ public class Player : MonoBehaviour
     if (collision.gameObject.tag == "Treasure")
     {
       GameController.instance.GameWon();
+      ws.Send("{\"type\":\"PLAYER_WON\", \"accessToken\": \"" + GlobalData.accessToken + "\", \"gameId\": \"" + GlobalData.gameId + "\", \"userId\": \"" + GlobalData.userId + "\"}");
       Destroy(gameObject);
+      CurrentLevel.Instance.setCurrentLevel(1);
     }
   }
 }
