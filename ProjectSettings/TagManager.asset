@@ -7,6 +7,8 @@ TagManager:
   - Enemy
   - Door
   - Treasure
+  - Barrier
+  - Hole
   layers:
   - Default
   - TransparentFX

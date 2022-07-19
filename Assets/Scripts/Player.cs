@@ -176,6 +176,17 @@ public class Player : MonoBehaviour
     }
   }
 
+  private void KillPlayer()
+  {
+    ws.Send("{\"type\":\"PLAYER_DYING\", \"accessToken\": \"" + GlobalData.accessToken + "\", \"gameId\": \"" + GlobalData.gameId + "\"}");
+    isDying = true;
+    circleCollider.isTrigger = true;
+    boxCollider.isTrigger = true;
+    rigidBody.bodyType = UnityEngine.RigidbodyType2D.Kinematic;
+    SetTransition(AnimationStates.Die);
+    GameController.instance.GameOver();
+  }
+
   public void OnDamage(int damage)
   {
     health -= damage;
@@ -193,13 +204,7 @@ public class Player : MonoBehaviour
 
     if (health <= 0)
     {
-      ws.Send("{\"type\":\"PLAYER_DYING\", \"accessToken\": \"" + GlobalData.accessToken + "\", \"gameId\": \"" + GlobalData.gameId + "\"}");
-      isDying = true;
-      circleCollider.isTrigger = true;
-      boxCollider.isTrigger = true;
-      rigidBody.bodyType = UnityEngine.RigidbodyType2D.Kinematic;
-      SetTransition(AnimationStates.Die);
-      GameController.instance.GameOver();
+      KillPlayer();
     }
   }
 
@@ -209,11 +214,29 @@ public class Player : MonoBehaviour
     UpdateLives();
   }
 
+
+  public void DecreaseHealth(int health)
+  {
+    this.health -= health;
+    UpdateLives();
+  }
+
   void OnCollisionEnter2D(Collision2D collision2D)
   {
     if (collision2D.gameObject.layer == GROUND_LAYER)
     {
       isJumping = false;
+    }
+
+    if (collision2D.gameObject.tag == "Hole")
+    {
+      rigidBody.AddForce(new Vector2(0, 25), ForceMode2D.Impulse);
+      DecreaseHealth(1);
+
+      if (health <= 0)
+      {
+        KillPlayer();
+      }
     }
   }
 

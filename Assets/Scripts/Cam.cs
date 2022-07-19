@@ -29,7 +29,7 @@ public class Cam : MonoBehaviour
     switch (CurrentLevel.Instance.getCurrentLevel())
     {
       case 1:
-        return player.position.x >= -5 && player.position.x <= 20;
+        return player.position.x >= -5 && player.position.x <= 40;
       case 2:
       default:
         return player.position.x >= -5 && player.position.x <= 20;
