@@ -35,5 +35,15 @@ public class FireBall : MonoBehaviour
       collision.GetComponent<Goblin>().OnDamage(damage);
       Destroy(gameObject);
     }
+
+    if (collision.gameObject.tag == "Stone")
+    {
+      Destroy(gameObject);
+    }
+
+    if (collision.gameObject.layer == Player.GROUND_LAYER)
+    {
+      Destroy(gameObject);
+    }
   }
 }

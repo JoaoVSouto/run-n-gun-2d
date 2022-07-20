@@ -9,6 +9,9 @@ TagManager:
   - Treasure
   - Barrier
   - Hole
+  - Ground
+  - Stone
+  - FireBall
   layers:
   - Default
   - TransparentFX

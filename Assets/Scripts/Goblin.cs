@@ -61,4 +61,12 @@ public class Goblin : MonoBehaviour
       collision.gameObject.GetComponent<Player>().OnDamage(damage);
     }
   }
+
+  void OnTriggerEnter2D(Collider2D collision)
+  {
+    if (collision.gameObject.tag == "Player")
+    {
+      collision.gameObject.GetComponent<Player>().OnDamage(damage);
+    }
+  }
 }

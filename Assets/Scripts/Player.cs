@@ -21,7 +21,7 @@ public class Player : MonoBehaviour
   private bool isJumping;
   private bool isFiring;
   private bool isDying;
-  private const int GROUND_LAYER = 6;
+  public static int GROUND_LAYER = 6;
   private enum AnimationStates
   {
     Idle,
@@ -146,7 +146,7 @@ public class Player : MonoBehaviour
 
   IEnumerator FireBall()
   {
-    string isFiringJson = Input.GetKeyDown(KeyCode.Mouse0) || Input.GetKeyDown(KeyCode.X) ? "true" : "false";
+    string isFiringJson = ((Input.GetKeyDown(KeyCode.Mouse0) || Input.GetKeyDown(KeyCode.X)) && !isFiring) ? "true" : "false";
 
     ws.Send("{\"type\":\"PLAYER_FIRING\", \"isFiring\":" + isFiringJson + ", \"accessToken\": \"" + GlobalData.accessToken + "\", \"x\": " + transform.position.x + ", \"y\": " + transform.position.y + ", \"gameId\": \"" + GlobalData.gameId + "\", \"userId\": \"" + GlobalData.userId + "\"}");
     if (isFiringJson == "true")

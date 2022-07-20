@@ -8,6 +8,8 @@ public class GameController : MonoBehaviour
 {
   public Text healthText;
   public Text scoreText;
+  public Text gameWinScoreText;
+  public Text gameOverScoreText;
   public GameObject gameOverObject;
   public GameObject gameWinObject;
 
@@ -42,12 +44,16 @@ public class GameController : MonoBehaviour
   {
     isGameOver = true;
     gameOverObject.SetActive(true);
+    string coinText = score == 1 ? "coin" : "coins";
+    gameOverScoreText.text = "You got only " + score.ToString() + " " + coinText;
   }
 
   public void GameWon()
   {
     isGameOver = true;
     gameWinObject.SetActive(true);
+    string coinText = score == 1 ? "coin" : "coins";
+    gameWinScoreText.text = "You got " + score.ToString() + " " + coinText;
   }
 
   public void Restart()

@@ -20,7 +20,6 @@ public class Partner : MonoBehaviour
   private bool isJumping;
   private bool isFiring;
   private bool isDying;
-  private const int GROUND_LAYER = 6;
   private enum AnimationStates
   {
     Idle,
@@ -213,31 +212,28 @@ public class Partner : MonoBehaviour
 
   IEnumerator FireBall()
   {
-    if (true)
+    isFiring = true;
+
+    SetTransition(AnimationStates.Fire);
+
+    GameObject fb = Instantiate(fireBall, firePoint.position, firePoint.rotation);
+
+    bool isGoingRight = transform.rotation.y == 0;
+    bool isGoingLeft = transform.rotation.y == 180;
+
+    if (isGoingRight)
     {
-      isFiring = true;
-
-      SetTransition(AnimationStates.Fire);
-
-      GameObject fb = Instantiate(fireBall, firePoint.position, firePoint.rotation);
-
-      bool isGoingRight = transform.rotation.y == 0;
-      bool isGoingLeft = transform.rotation.y == 180;
-
-      if (isGoingRight)
-      {
-        fb.GetComponent<FireBall>().isGoingRight = true;
-      }
-
-      if (isGoingLeft)
-      {
-        fb.GetComponent<FireBall>().isGoingRight = false;
-      }
-
-      yield return new WaitForSeconds(0.25f);
-
-      isFiring = false;
+      fb.GetComponent<FireBall>().isGoingRight = true;
     }
+
+    if (isGoingLeft)
+    {
+      fb.GetComponent<FireBall>().isGoingRight = false;
+    }
+
+    yield return new WaitForSeconds(0.25f);
+
+    isFiring = false;
   }
 
   public void OnDamage(int damage)
@@ -274,7 +270,7 @@ public class Partner : MonoBehaviour
 
   void OnCollisionEnter2D(Collision2D collision2D)
   {
-    if (collision2D.gameObject.layer == GROUND_LAYER)
+    if (collision2D.gameObject.layer == Player.GROUND_LAYER)
     {
       isJumping = false;
     }
