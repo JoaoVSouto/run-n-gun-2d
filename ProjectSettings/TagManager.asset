@@ -12,6 +12,7 @@ TagManager:
   - Ground
   - Stone
   - FireBall
+  - Partner
   layers:
   - Default
   - TransparentFX

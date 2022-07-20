@@ -10,7 +10,7 @@ public class Skeleton : MonoBehaviour
 
   private bool hasFired;
 
-  void Update()
+  void FixedUpdate()
   {
     HandleFireStoneCoroutine();
   }

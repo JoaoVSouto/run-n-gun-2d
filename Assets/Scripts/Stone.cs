@@ -12,7 +12,16 @@ public class Stone : MonoBehaviour
 
   void Start()
   {
-    player = GameObject.FindGameObjectWithTag("Player").transform;
+    Transform playerPosition = GameObject.FindGameObjectWithTag("Player").transform;
+    Transform partnerPosition = GameObject.FindGameObjectWithTag("Partner").transform;
+    if (playerPosition.position.x > partnerPosition.position.x)
+    {
+      player = playerPosition;
+    }
+    else
+    {
+      player = partnerPosition;
+    }
     rigidBody = GetComponent<Rigidbody2D>();
     Destroy(gameObject, 3f);
   }
@@ -22,6 +31,7 @@ public class Stone : MonoBehaviour
     Vector3 playerPosition = new Vector3(player.position.x, player.position.y + 1, transform.position.z);
     transform.position = Vector3.Lerp(transform.position, playerPosition, smooth * Time.deltaTime);
     transform.Rotate(0, 0, 240 * Time.deltaTime);
+    print(Time.deltaTime);
   }
 
   void OnTriggerEnter2D(Collider2D collision2D)
@@ -29,6 +39,12 @@ public class Stone : MonoBehaviour
     if (collision2D.gameObject.tag == "Player")
     {
       collision2D.GetComponent<Player>().OnDamage(damage);
+      Destroy(gameObject);
+    }
+
+    if (collision2D.gameObject.tag == "Partner")
+    {
+      collision2D.GetComponent<Partner>().OnDamage(damage);
       Destroy(gameObject);
     }
 
