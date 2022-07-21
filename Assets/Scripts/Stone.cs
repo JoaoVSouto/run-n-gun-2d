@@ -31,7 +31,6 @@ public class Stone : MonoBehaviour
     Vector3 playerPosition = new Vector3(player.position.x, player.position.y + 1, transform.position.z);
     transform.position = Vector3.Lerp(transform.position, playerPosition, smooth * Time.deltaTime);
     transform.Rotate(0, 0, 240 * Time.deltaTime);
-    print(Time.deltaTime);
   }
 
   void OnTriggerEnter2D(Collider2D collision2D)
@@ -53,7 +52,7 @@ public class Stone : MonoBehaviour
       Destroy(gameObject);
     }
 
-    if (collision2D.gameObject.layer == Player.GROUND_LAYER)
+    if (collision2D.gameObject.layer == Player.GROUND_LAYER || collision2D.gameObject.layer == Player.SEPARATOR_LAYER)
     {
       Destroy(gameObject);
     }

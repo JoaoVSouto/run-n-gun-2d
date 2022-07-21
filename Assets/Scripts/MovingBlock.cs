@@ -7,7 +7,7 @@ public class MovingBlock : MonoBehaviour
   public float walkTowardsDirectionTime;
   public float speed;
 
-  private bool isGoingRight;
+  public bool isGoingRight;
   private float timer;
   private Rigidbody2D rigidBody;
 

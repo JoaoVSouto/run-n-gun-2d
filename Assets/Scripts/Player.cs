@@ -23,6 +23,7 @@ public class Player : MonoBehaviour
   private bool isAbleToDoubleJump;
   private bool isDying;
   public static int GROUND_LAYER = 6;
+  public static int SEPARATOR_LAYER = 7;
   private enum AnimationStates
   {
     Idle,
