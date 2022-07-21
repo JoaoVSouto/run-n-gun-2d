@@ -20,6 +20,7 @@ public class Player : MonoBehaviour
   private BoxCollider2D boxCollider;
   private bool isJumping;
   private bool isFiring;
+  private bool isAbleToDoubleJump;
   private bool isDying;
   public static int GROUND_LAYER = 6;
   private enum AnimationStates
@@ -133,6 +134,13 @@ public class Player : MonoBehaviour
       if (!isJumping)
       {
         isJumping = true;
+        isAbleToDoubleJump = true;
+        SetTransition(AnimationStates.Jump);
+        rigidBody.AddForce(new Vector2(0, jumpForce), ForceMode2D.Impulse);
+      }
+      else if (isAbleToDoubleJump)
+      {
+        isAbleToDoubleJump = false;
         SetTransition(AnimationStates.Jump);
         rigidBody.AddForce(new Vector2(0, jumpForce), ForceMode2D.Impulse);
       }
