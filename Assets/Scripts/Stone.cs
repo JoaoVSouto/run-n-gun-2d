@@ -47,10 +47,10 @@ public class Stone : MonoBehaviour
       Destroy(gameObject);
     }
 
-    if (collision2D.gameObject.tag == "FireBall")
-    {
-      Destroy(gameObject);
-    }
+    // if (collision2D.gameObject.tag == "FireBall")
+    // {
+    //   Destroy(gameObject);
+    // }
 
     if (collision2D.gameObject.layer == Player.GROUND_LAYER || collision2D.gameObject.layer == Player.SEPARATOR_LAYER)
     {

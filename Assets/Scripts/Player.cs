@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using WebSocketSharp;
 using Newtonsoft.Json.Linq;
+using System;
 
 public class Player : MonoBehaviour
 {
@@ -22,6 +23,7 @@ public class Player : MonoBehaviour
   private bool isFiring;
   private bool isAbleToDoubleJump;
   private bool isDying;
+  private long lastDamageTimestamp = 0;
   public static int GROUND_LAYER = 6;
   public static int SEPARATOR_LAYER = 7;
   private enum AnimationStates
@@ -155,7 +157,7 @@ public class Player : MonoBehaviour
 
   IEnumerator FireBall()
   {
-    string isFiringJson = ((Input.GetKeyDown(KeyCode.Mouse0) || Input.GetKeyDown(KeyCode.X)) && !isFiring) ? "true" : "false";
+    string isFiringJson = ((Input.GetKeyDown(KeyCode.Mouse0) || Input.GetKey(KeyCode.X)) && !isFiring) ? "true" : "false";
 
     ws.Send("{\"type\":\"PLAYER_FIRING\", \"isFiring\":" + isFiringJson + ", \"accessToken\": \"" + GlobalData.accessToken + "\", \"x\": " + transform.position.x + ", \"y\": " + transform.position.y + ", \"gameId\": \"" + GlobalData.gameId + "\", \"userId\": \"" + GlobalData.userId + "\"}");
     if (isFiringJson == "true")
@@ -198,22 +200,28 @@ public class Player : MonoBehaviour
 
   public void OnDamage(int damage)
   {
-    health -= damage;
-    UpdateLives();
-    animator.SetTrigger("hit");
+    long nowTimestamp = new DateTimeOffset(DateTime.UtcNow).ToUnixTimeSeconds();
 
-    if (transform.rotation.y >= 0)
+    if (nowTimestamp - lastDamageTimestamp > 1)
     {
-      transform.position += new Vector3(-0.5f, 0, 0);
-    }
-    else
-    {
-      transform.position += new Vector3(0.5f, 0, 0);
-    }
+      lastDamageTimestamp = new DateTimeOffset(DateTime.UtcNow).ToUnixTimeSeconds();
+      health -= damage;
+      UpdateLives();
+      animator.SetTrigger("hit");
 
-    if (health <= 0)
-    {
-      KillPlayer();
+      if (transform.rotation.y >= 0)
+      {
+        transform.position += new Vector3(-0.5f, 0, 0);
+      }
+      else
+      {
+        transform.position += new Vector3(0.5f, 0, 0);
+      }
+
+      if (health <= 0)
+      {
+        KillPlayer();
+      }
     }
   }
 

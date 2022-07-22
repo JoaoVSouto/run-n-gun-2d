@@ -150,7 +150,7 @@ public class Partner : MonoBehaviour
 
   void UpdateLives()
   {
-    GameController.instance.UpdateLives(health);
+    // GameController.instance.UpdateLives(health);
   }
 
   void SetTransition(AnimationStates state)
@@ -238,34 +238,12 @@ public class Partner : MonoBehaviour
 
   public void OnDamage(int damage)
   {
-    health -= damage;
-    UpdateLives();
-    animator.SetTrigger("hit");
-
-    if (transform.rotation.y >= 0)
-    {
-      transform.position += new Vector3(-0.5f, 0, 0);
-    }
-    else
-    {
-      transform.position += new Vector3(0.5f, 0, 0);
-    }
-
-    if (health <= 0)
-    {
-      isDying = true;
-      circleCollider.isTrigger = true;
-      boxCollider.isTrigger = true;
-      rigidBody.bodyType = UnityEngine.RigidbodyType2D.Kinematic;
-      SetTransition(AnimationStates.Die);
-      // GameController.instance.GameOver();
-    }
+    
   }
 
   public void AddHealth(int health)
   {
-    this.health += health;
-    UpdateLives();
+    
   }
 
   void OnCollisionEnter2D(Collision2D collision2D)

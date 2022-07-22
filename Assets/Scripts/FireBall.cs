@@ -36,10 +36,10 @@ public class FireBall : MonoBehaviour
       Destroy(gameObject);
     }
 
-    if (collision.gameObject.tag == "Stone")
-    {
-      Destroy(gameObject);
-    }
+    // if (collision.gameObject.tag == "Stone")
+    // {
+    //   Destroy(gameObject);
+    // }
 
     if (collision.gameObject.layer == Player.GROUND_LAYER)
     {
