@@ -32,7 +32,7 @@ public class Cam : MonoBehaviour
         return player.position.x >= -5 && player.position.x <= 120;
       case 2:
       default:
-        return player.position.x >= -5 && player.position.x <= 999999;
+        return player.position.x >= -5 && player.position.x <= 135;
     }
   }
 
